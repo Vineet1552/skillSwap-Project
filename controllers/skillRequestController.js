@@ -45,6 +45,7 @@ const updateRequestStatus = async(req, res) => {
 
         // find the skillRequest from id
         const request = await SkillRequest.findById(req.params.id);
+        console.log(request, "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
 
         if(!request) {
             res.status(404).json({
@@ -52,11 +53,56 @@ const updateRequestStatus = async(req, res) => {
             });
         }
 
+        // check if logedin user is same as receiver user
+        if(request.receiver.toString() !== req.user.userId) {
+            return res.status(401).json({
+                message: "not authorized to update this request"
+            })
+        }
+
+        request.status = status;
+        await request.save();
+        res.json(request);
 
     } catch(error) {
-        res.status().json({
+        res.status(500).json({
             message: "failed to update the request",
             error: error.message
         })
     }
+}
+
+// method for view request that you have reeceived
+const getIncommingRequests = async(req, res) => {
+    try{
+        const requests = await SkillRequest.find({receiver: req.user.userId}).populate("requester", "name email"); 
+        // const requests = await SkillRequest.find({receiver: req.user.userId});  
+        res.json(requests);
+    } catch(error) {
+        res.status(500).json({
+            message: "error while getting the requests",
+            error: error.message
+        })
+    }
+}
+
+// method for view requests that you have sent
+const getOutgoingRequests = async(req, res) => {
+    try{
+        const requests = await SkillRequest.find({requester: req.user.userId}).populate("receiver", "name email");
+        res.json(requests);
+    } catch(error) {
+        res.status(500).json({
+            message: "error while getting the outgoing requests",
+            error: error.message
+        })
+    }
+}
+
+
+module.exports = {
+    createRequest,
+    updateRequestStatus,
+    getIncommingRequests,
+    getOutgoingRequests
 }
