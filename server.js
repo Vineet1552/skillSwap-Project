@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const skillRequestRoutes = require("./routes/skillRequestRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 app.use(express.json());
 app.use(morgan("dev"));
@@ -15,6 +16,7 @@ app.use(morgan("dev"));
 app.use('/api/auth', authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/request", skillRequestRoutes);
+app.use("/api/message", messageRoutes);
 
 
 app.listen(port, () => {
