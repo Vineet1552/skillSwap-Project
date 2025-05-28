@@ -50,7 +50,27 @@ const sendMessage = async(req, res) => {
     }
 }
 
+// getting chat history of logged-in user and user you want 
+// Get chat history
+const getMessages = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { sender: req.user.userId, receiver: userId },
+        { sender: userId, receiver: req.user.userId },
+      ],
+    }).sort({ createdAt: 1 });
+
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch messages", error: err.message });
+  }
+};
+
 
 module.exports = {
-    sendMessage
+    sendMessage,
+    getMessages
 }
