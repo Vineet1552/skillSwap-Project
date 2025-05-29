@@ -40,6 +40,7 @@ const sendMessage = async(req, res) => {
         });
 
         await newMessage.save();
+        console.log(newMessage, "newnewnewnew");
         return res.status(201).json(newMessage);        
 
     } catch(error) {
