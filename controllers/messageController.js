@@ -53,6 +53,8 @@ const sendMessage = async(req, res) => {
 
 // getting chat history of logged-in user and user you want 
 // Get chat history
+
+
 const getMessages = async (req, res) => {
   const { userId } = req.params;
 
